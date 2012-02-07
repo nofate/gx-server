@@ -1,0 +1,9 @@
+{
+	"name": "gx-server",
+	"version" : "0.0.1",
+	"dependencies": {
+		"express": "2.5.0",
+		"mongolian": "0.1.15",
+		"connect-auth": "0.4.1"
+	}
+}
