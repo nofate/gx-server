@@ -1,9 +1,20 @@
 var express = require('express');
-var app = express.createServer(express.logger());
-app.use(express.bodyParser());
+var auth = require('connect-auth');
+var myauth = require('./gx-form-auth');
+var connect = require("connect");
+
+var app = express.createServer(
+	express.logger(),
+	express.bodyParser(),
+	express.cookieParser(),
+	express.session({ secret: "supertopsecret" }),	
+	auth(myauth())
+);
+
 
 app.get('/', function(req, res) {
-	res.send('OK');
+		req.authenticate(['someName'], function(error, authenticated) { res.send('OK'); } );
+		
 });
 
 

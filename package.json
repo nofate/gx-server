@@ -4,6 +4,7 @@
 	"dependencies": {
 		"express": "2.5.0",
 		"mongolian": "0.1.15",
+		"connect": "1.8.5",
 		"connect-auth": "0.4.1"
 	}
 }
