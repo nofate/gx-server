@@ -1,6 +1,9 @@
 var connect = require('connect');
 var url = require('url');
 var util = require('util');
+var Mongolian = require('mongolian');
+var db = (new Mongolian).db("gx");
+var users = db.collection('users');
 
 module.exports = function(options) {
 	options = options || {};
@@ -30,14 +33,16 @@ module.exports = function(options) {
 
 				console.log("login: " + request.body.login);
 				console.log("pass: " + request.body.password);
-
-				if (request.body.login == 'foo' && request.body.password == 'bar') {
-					console.log('OK');
-					executionScope.success( { name:request.body.login }, callback );
-				} else {
-					console.log('BAD');
-					executionScope.fail(callback);					
-				}
+				users.findOne( { login: request.body.login }, function(err, user) {
+					if (user != undefined && user.password == request.body.password) {
+						console.log('OK');
+						request.session.user = user;
+						executionScope.success( { name:request.body.login }, callback );
+					} else {
+						console.log('BAD');
+						executionScope.fail(callback);					
+					}
+				});
 			} else {
 				console.log('FAIL');
 				failed_validation(request, response);
