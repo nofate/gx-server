@@ -6,6 +6,8 @@
 		"mongolian": "0.1.15",
 		"connect": "1.8.5",
 		"connect-auth": "0.4.1",
-		"jade": "0.20.1"
+		"jade": "0.20.1",
+		"socket.io": "0.8.7" ,
+		"socket.io-sessions": "0.6.1"
 	}
 }

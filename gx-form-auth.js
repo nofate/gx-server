@@ -1,8 +1,7 @@
 var connect = require('connect');
 var url = require('url');
 var util = require('util');
-var Mongolian = require('mongolian');
-var db = (new Mongolian).db("gx");
+var db = require('./db').connection;
 var users = db.collection('users');
 
 module.exports = function(options) {
