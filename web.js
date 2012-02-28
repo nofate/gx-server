@@ -70,6 +70,7 @@ var players = new Array();
 socket.on('sconnection', function(client, session) {
 	console.log('New connection from: ', session.user.login);
 	client.emit('greet', 'Hello, ' + session.user.login);
+    socket.sockets.emit('user-list', { type:'add', user: session.user.login });
 
 	client.on('msg', function(data) {
 		console.log('Message from', session.user.login, ': ', data);
@@ -104,7 +105,13 @@ socket.on('sconnection', function(client, session) {
             socket.sockets.emit('ladder',  users);
         });
     });
+
+    client.on('disconnect', function() {
+        socket.sockets.emit('user-list', { type:'remove', user: session.user.login });
+        console.log('User '+ session.user.login + ' disconnected');
+    });
 });
+
 
 var game_loop = new events.EventEmitter();
 var state = 'wait', old_state = 'wait';
