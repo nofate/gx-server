@@ -1,4 +1,4 @@
-var socket = io.connectWithSession('http://localhost');
+var socket = io.connectWithSession(null, { port: 443, secure: true });
 
 socket.on('greet', function(data) {
 	renderSystemMessage(data);
@@ -54,12 +54,26 @@ socket.on('user-list', function(data) {
     }
 });
 
+function sendMessage() {
+    var message = $("#message").val();
+    socket.emit('msg', { data: message });
+    $("#message").val("");
+}
+
+
 $(document).ready(function() {
 
 	$("#submit").click(function(){
-		var message = $("#message").val(); 
-		socket.emit('msg', { data: message });
+        sendMessage();
 	});
+
+
+    $("#message").keypress(function(e){
+        if ((e.keyCode || e.which) == 13 ) {
+            sendMessage();
+            return false;
+        }
+    });
 
     $("#join-game").click(function() {
         joinGame();

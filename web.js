@@ -7,18 +7,21 @@ var io = require('socket.io');
 var sio = require('socket.io-sessions');
 var events = require('events');
 var db = require('./db').connection;
+var fs = require('fs');
+var crypto = require('crypto');
+
+
+var privateKey = fs.readFileSync('keys/server.key').toString();
+var certificate = fs.readFileSync('keys/server.pem').toString();
+
 
 var session_store = new MemoryStore();
 
-var app = express.createServer(
-	express.logger(),
-	express.bodyParser(),
-	express.cookieParser(),
-	express.session({ store: session_store, secret: "supertopsecret" }),	
-	auth(myauth())
-);
+var app = express.createServer( { key: privateKey, cert: certificate} );
 
-var io = io.listen(app);
+
+
+var io = io.listen(app,  { key: privateKey, cert: certificate});
 
 var socket = sio.enable({
 	socket: io,
@@ -28,6 +31,11 @@ var socket = sio.enable({
 });
 
 app.use(express.static(__dirname + '/static'));
+app.use(express.logger());
+app.use(express.bodyParser());
+app.use(express.cookieParser());
+app.use(express.session({ store: session_store, secret: "supertopsecret" }));
+app.use(auth(myauth()));
 
 /*
 app.get('/', function(req, res) {
@@ -48,7 +56,7 @@ app.get('/chat', function(req, res) {
 });
 
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 443;
 
 app.listen(port, function() {
 	console.log("Listening on " + port);
